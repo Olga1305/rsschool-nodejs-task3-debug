@@ -4,7 +4,7 @@ const sequelize = require("../db");
 router.get("/all", async (req, res) => {
   try {
     const games = await sequelize.models.Game.findAll({
-      where: { owner_id: req.user.id },
+      where: { ownerId: req.user.id },
     });
     if (games.length) {
       res.status(200).json({
@@ -13,17 +13,17 @@ router.get("/all", async (req, res) => {
       });
     }
     res.status(404).json({
-      message: "Data not found.",
+        error: "Data not found.",
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
 router.get("/:id", async (req, res) => {
   try {
     const game = await sequelize.models.Game.findOne({
-      where: { id: req.params.id, owner_id: req.user.id },
+      where: { id: req.params.id, ownerId: req.user.id },
     });
     if (game) {
       res.status(200).json({
@@ -31,55 +31,55 @@ router.get("/:id", async (req, res) => {
       });
     }
     res.status(404).json({
-      message: "Data not found.",
+        error: "Data not found.",
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
 router.post("/create", async (req, res) => {
-  const { title, studio, esrb_rating, user_rating, have_played } =
+  const { title, studio, esrbRating, userRating, havePlayed } =
     req.body.game;
   try {
     const game = await sequelize.models.Game.create({
       title,
-      owner_id: req.user.id,
+      ownerId: req.user.id,
       studio,
-      esrb_rating,
-      user_rating,
-      have_played,
+      esrbRating,
+      userRating,
+      havePlayed,
     });
     if (game) {
       res.status(201).json({
-        game: game,
+        game,
         message: "Game created.",
       });
     }
     res.status(500).json({
-        message: "Creation fail"
-      });
+        error: "Creation fail",
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
 router.put("/update/:id", async (req, res) => {
-  const { title, studio, esrb_rating, user_rating, have_played } =
+  const { title, studio, esrbRating, userRating, havePlayed } =
     req.body.game;
   try {
     const game = await sequelize.models.Game.update(
       {
         title,
         studio,
-        esrb_rating,
-        user_rating,
-        have_played,
+        esrbRating,
+        userRating,
+        havePlayed,
       },
       {
         where: {
           id: req.params.id,
-          owner_id: req.user.id,
+          ownerId: req.user.id,
         },
       }
     );
@@ -90,10 +90,10 @@ router.put("/update/:id", async (req, res) => {
       });
     }
     res.status(204).json({
-      message: "No content.",
+        error: "No content.",
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -102,7 +102,7 @@ router.delete("/remove/:id", async (req, res) => {
     const game = await sequelize.models.Game.destroy({
       where: {
         id: req.params.id,
-        owner_id: req.user.id,
+        ownerId: req.user.id,
       },
     });
     if (game) {
@@ -112,10 +112,10 @@ router.delete("/remove/:id", async (req, res) => {
       });
     }
     res.status(204).json({
-      message: "No content.",
+        error: "No content.",
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 

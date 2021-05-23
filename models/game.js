@@ -5,7 +5,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false,
         },
 
-        owner_id: {
+        ownerId: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -15,12 +15,12 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false,            
         },
 
-        esrb_rating: {
+        esrbRating: {
             type: DataTypes.CHAR(5),
             allowNull: false,
         },
 
-        user_rating: {
+        userRating: {
             type: DataTypes.INTEGER,
             allowNull: false,
             validate: {
@@ -29,7 +29,7 @@ module.exports = function(sequelize, DataTypes) {
             }
         },
 
-        have_played : {
+        havePlayed : {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull: false
