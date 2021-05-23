@@ -1,4 +1,6 @@
-const Sequelize = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
+const User = require('./models/user');
+const Game = require('./models/game');
 require("dotenv").config();
 
 const sequelize = new Sequelize(
@@ -8,7 +10,7 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: "postgres",
-    operatorsAliases: false
+    operatorsAliases: 0
   }
 );
 
@@ -20,6 +22,12 @@ sequelize.authenticate().then(
   function fail(err) {
     console.log(`Error: ${err}`);
   }
-);
+)
+.then(
+  async() => {
+    await User(sequelize, DataTypes).sync({ force: true });
+    await Game(sequelize, DataTypes).sync({ force: true });
+  }
+).catch(err => console.log(err));
 
 module.exports = sequelize;

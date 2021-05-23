@@ -2,20 +2,20 @@ var router = require('express').Router();
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
-var User = require('../models/user');
+const sequelize = require('../db');
 
 router.post('/signup', (req, res) => {
-    User.create({
-        full_name: req.body.user.full_name,
-        username: req.body.user.username,
-        passwordhash: bcrypt.hashSync(req.body.user.password, 10),
+    const newUser = sequelize.models.User.create({
+        fullName: req.body.user.fullName,
+        userName: req.body.user.userName,
+        passwordHash: bcrypt.hashSync(req.body.user.password, 10),
         email: req.body.user.email,
     })
         .then(
-            function signupSuccess(user) {
-                let token = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
+            function signupSuccess(newUser) {
+                let token = jwt.sign({ id: newUser.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
                 res.status(200).json({
-                    user: user,
+                    user: newUser,
                     token: token
                 })
             },
@@ -24,10 +24,10 @@ router.post('/signup', (req, res) => {
                 res.status(500).send(err.message)
             }
         )
-})
+});
 
 router.post('/signin', (req, res) => {
-    User.findOne({ where: { username: req.body.user.username } }).then(user => {
+    sequelize.models.User.findOne({ where: { userName: req.body.user.userName } }).then(user => {
         if (user) {
             bcrypt.compare(req.body.user.password, user.passwordHash, function (err, matches) {
                 if (matches) {
@@ -46,6 +46,6 @@ router.post('/signin', (req, res) => {
         }
 
     })
-})
+});
 
 module.exports = router;
